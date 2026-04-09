@@ -43,7 +43,7 @@ proguard/
 # GRADLE
 # ========================
 gradle-wrapper.jar        # only if you prefer team to download it
-.gradle/
+#.gradle/
 **/build/
 gradle/wrapper/gradle-wrapper.jar  # optional, some teams commit this
 
