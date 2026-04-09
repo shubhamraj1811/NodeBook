@@ -1,0 +1,106 @@
+# ========================
+# ANDROID
+# ========================
+*.iml
+.gradle/
+/local.properties
+/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# Generated APKs, bundles, and outputs
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# ProGuard
+proguard/
+*.pro
+
+# ========================
+# ANDROID STUDIO / IDEA
+# ========================
+/.idea/caches/
+/.idea/libraries/
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/.idea/.gitignore
+/.idea/deploymentTargetDropDown.xml
+/.idea/render.experimental.xml
+/.idea/migrations.xml
+/.idea/uiDesigner.xml
+/.idea/androidTestResultsUserPreferences.xml
+
+# Keep these (don't ignore):
+# !/.idea/runConfigurations/   ← useful to share run configs
+# !/.idea/codeStyles/          ← useful to share code style
+
+# ========================
+# GRADLE
+# ========================
+gradle-wrapper.jar        # only if you prefer team to download it
+.gradle/
+**/build/
+gradle/wrapper/gradle-wrapper.jar  # optional, some teams commit this
+
+# ========================
+# KOTLIN / JAVA
+# ========================
+*.class
+*.kotlin_module
+bin/
+out/
+gen/
+
+# ========================
+# SIGNING & SECRETS 🔐
+# ========================
+*.jks
+*.keystore
+*.p12
+keystore.properties
+signing.properties
+google-services.json      # contains API keys
+GoogleService-Info.plist
+
+# ========================
+# ENVIRONMENT / CONFIG
+# ========================
+local.properties
+secrets.properties
+*.env
+.env.local
+api_keys.xml
+secrets.xml
+
+# ========================
+# OS FILES
+# ========================
+.DS_Store             # macOS
+Thumbs.db             # Windows
+Desktop.ini           # Windows
+ehthumbs.db           # Windows
+*~                    # Linux temp files
+
+# ========================
+# LOGS & CRASH REPORTS
+# ========================
+*.log
+*.hprof               # heap dumps
+replay_pid*.log
+
+# ========================
+# DEPENDENCY DIRECTORIES
+# ========================
+node_modules/         # if using any JS tooling
+
+# ========================
+# TEST OUTPUTS
+# ========================
+/test-results/
+/jacoco/
+*.exec
