@@ -47,3 +47,64 @@ com.notes.app/
 └── utils/              ← Helper functions  
 
 > 💡 Pro tip: The reason we use API 26 as minimum is it covers 95%+ of active Android devices while giving us access to modern APIs we need.
+
+## 📂 You Have TWO Gradle Files — Know the Difference
+
+NotesApp/  
+├── build.gradle.kts          ← Project-level (global settings)  
+└── app/  
+└── build.gradle.kts      ← App-level (YOUR app's libraries) ← we edit this most   
+
+> 💡 Why two? Project-level applies to the whole project (like plugin versions). App-level is specific to your app module.
+
+## 🔄 Now Sync Gradle
+> After saving all 3 files:
+
+- Look for the "Sync Now" bar that appears at the top
+- Or go to File → Sync Project with Gradle Files
+
+## 💡 What Did We Just Do?
+
+| What?               | Why?                                                                      |
+|---------------------|---------------------------------------------------------------------------|
+| libs.versions.toml  | One place for ALL version numbers — change once, updates everywhere       |
+| composeBom          | Bill of Materials — Google guarantees all Compose libs                    |
+| ksp instead of kapt | Newer, 2x faster annotation processor for Room & Hilt                     |
+| hilt                | Pro-grade dependency injection — we'll explain this deeply when we use it |
+
+---
+
+## Data Models (The Blueprint of Our App)
+A data class is a special Kotlin class whose only job is to hold data. Kotlin auto-generates equals(), hashCode(), toString() for you.
+
+## 📁 First — Create the Package Structure
+com.notes.app.data.model   
+com.notes.app.data.local  
+com.notes.app.data.repository  
+com.notes.app.di  
+com.notes.app.ui.screens  
+com.notes.app.ui.components  
+com.notes.app.ui.theme  
+com.notes.app.ui.viewmodel  
+com.notes.app.utils  
+
+> 💡 Why do this first? Clean package structure = clean mind.  
+> Every file has a home.  
+> This is how professional projects are organized — you can onboard a new developer and they instantly know where everything lives.
+
+## 💡 Let's Understand Every Annotation
+| Annotation                       | Meaning                                                                              |
+|----------------------------------|--------------------------------------------------------------------------------------|
+| @Entity                          | Tells Room "this class = a database table                                            |
+| @PrimaryKey(autoGenerate = true) | Room auto-assigns a unique ID to every row                                           |
+| @ForeignKey                      | Links notes to folders — like a relationship in SQL                                  |
+| onDelete = SET_NULL              | If you delete a folder, its notes don't get deleted — they just become "unfoldered"  |
+
+### 🔗 The Relationship Visualized
+
+Folder Table              Note Table
+──────────────            ──────────────────────────
+id = 1  "C++ Notes"  ←── folderId = 1  "Pointers note"
+id = 2  "Python"     ←── folderId = 1  "Memory note"
+←── folderId = 2  "Lists note"
+folderId = null  "Random note"
