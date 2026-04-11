@@ -123,3 +123,39 @@ data.local/
 ├── FolderDao.kt      ← SQL queries for folders  
 ├── NoteDao.kt        ← SQL queries for notes    
 └── NotesDatabase.kt  ← The actual database instance  
+
+## 💡 Understanding the Key Concepts
+
+> What is a DAO?
+
+**Data Access Object —** it's just an interface where you define every operation your app can do with the database. Room reads this interface and generates the actual implementation at compile time.
+
+> What is Flow?
+
+`fun getAllNotes(): Flow<List<Note>>`
+Flow is like a live stream of data. When any note in the database changes, your UI automatically gets the update without you asking for it. Perfect for a notes app.
+
+> What is suspend?
+
+`suspend fun deleteNote(note: Note)`
+suspend means "this runs on a background thread". Database operations can't run on the main UI thread — it would freeze your app. suspend functions must be called from a coroutine.
+
+> The difference visualized:
+
+Flow    → "Keep watching, tell me whenever data changes"  
+suspend → "Do this once in background, tell me when done"  
+
+getAllNotes()  → Flow   ✅ (we want live updates)  
+deleteNote()  → suspend ✅ (one-time action)  
+
+> OnConflictStrategy.REPLACE
+
+If you try to insert a note with an ID that already exists — just replace it. This is how we handle edits cleanly.
+
+> 🏗️ The Full Picture So Far
+
+Note.kt / Folder.kt          ← What data looks like  
+            ↓  
+NoteDao / FolderDao          ← How to read/write that data  
+            ↓  
+NotesDatabase                ← The database that holds it all  

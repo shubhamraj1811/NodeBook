@@ -1,9 +1,11 @@
 package com.node.book.data.model
 
+// --- Imports -----------------
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
+// --- Folder Entity -----------------
 @Entity(
     tableName = "notes",
     foreignKeys = [
@@ -15,6 +17,7 @@ import androidx.room.PrimaryKey
         )
     ]
 )
+// --- Note Entity -----------------
 data class Note(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
