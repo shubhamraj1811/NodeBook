@@ -102,9 +102,24 @@ com.notes.app.utils
 
 ### 🔗 The Relationship Visualized
 
-Folder Table              Note Table
-──────────────            ──────────────────────────
-id = 1  "C++ Notes"  ←── folderId = 1  "Pointers note"
-id = 2  "Python"     ←── folderId = 1  "Memory note"
-←── folderId = 2  "Lists note"
-folderId = null  "Random note"
+Folder Table              Note Table  
+──────────────            ──────────────────────────  
+id = 1  "C++ Notes"  ←── folderId = 1  "Pointers note"  
+id = 2  "Python"     ←── folderId = 1  "Memory note"  
+←── folderId = 2  "Lists note"  
+folderId = null  "Random note"  
+
+--- 
+
+# Room Database (DAO + Database Class)
+
+## 💡 What is Room?
+- Room is Google's official database library.
+- It's a wrapper around SQLite (which is what Android uses under the hood) but instead of writing raw SQL everywhere, you write Kotlin interfaces and Room generates all the messy SQL code for you.
+
+> You write:  getNoteById(id) || Room does:  SELECT * FROM notes WHERE id = :id
+
+data.local/  
+├── FolderDao.kt      ← SQL queries for folders  
+├── NoteDao.kt        ← SQL queries for notes    
+└── NotesDatabase.kt  ← The actual database instance  

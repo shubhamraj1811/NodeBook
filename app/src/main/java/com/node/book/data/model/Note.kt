@@ -1,4 +1,4 @@
-package com.notes.app.data.model
+package com.node.book.data.model
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class `Note.kt`(
+data class Note(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
