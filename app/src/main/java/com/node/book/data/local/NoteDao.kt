@@ -22,7 +22,7 @@ interface NoteDao {
 
     // --- Query For Note By Id -----------------
     @Query("SELECT * FROM notes WHERE id = :id")
-    suspend fun getNoteById(Id: Int): Note?
+    suspend fun getNoteById(id: Int): Note?
 
     // --- Query For Search -----------------
     @Query("""
