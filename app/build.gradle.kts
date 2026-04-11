@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.notes.app"
+    namespace = "com.node.book"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.notes.app"
+        applicationId = "com.node.book"
         minSdk = 26
         targetSdk = 35
         versionCode = 1

@@ -159,3 +159,71 @@ Note.kt / Folder.kt          ← What data looks like
 NoteDao / FolderDao          ← How to read/write that data  
             ↓  
 NotesDatabase                ← The database that holds it all  
+
+---
+
+# Repository + Dependency Injection (Hilt)
+
+> 💡 What is a Repository?
+- Right now our ViewModels could talk directly to the DAO.
+- But professionals add a Repository layer in between.
+- Here's why:
+❌ Without Repository: ViewModel → NoteDao (directly)  
+✅ With Repository: ViewModel → NoteRepository → NoteDao  
+
+- The ViewModel doesn't care where data comes from — local DB, internet API, cache.
+- The Repository handles that decision. This is called separation of concerns.
+
+> 💡 What is Hilt (Dependency Injection)?
+- This is the concept that trips up most beginners. Let's make it simple.
+- Without Hilt — you manually create every object:
+
+`val db = NotesDatabase.create(context)`  
+`val dao = db.noteDao()`  
+`val repo = NoteRepository(dao)`  
+`val viewModel = NoteViewModel(repo)`  
+`// You manage all of this yourself 😰`  
+
+- With Hilt — you just say "I need this" and Hilt builds it for you:
+
+`@HiltViewModel`  
+`class NoteViewModel @Inject constructor(`  
+`private val repository: NoteRepository  // Hilt gives this to you automatically ✅`  
+`)`  
+
+- Hilt is like a smart factory that knows how to build every object in your app.
+
+> What is AndroidManifest.xml?
+
+It's not a UI file at all. Think of it as your app's ID card that tells Android:
+- What is this app called?
+- What permissions does it need? (camera, internet etc)
+- Which Activity opens first?
+- What Application class runs at startup?  ← this is why we edit it
+
+> 💡 How Hilt Works — The Full Picture
+
+@HiltAndroidApp          ← Starts Hilt in your whole app  
+    ↓  
+@InstallIn               ← This module lives for the app's lifetime  
+    ↓    
+@Provides                ← "Here's how to build this object"   
+    ↓  
+@Inject                  ← "Please give me this object"  
+    ↓  
+@AndroidEntryPoint       ← "This Activity/Fragment uses Hilt"  
+
+- Hilt reads all of this at compile time and generates all the wiring code automatically.
+
+---
+
+# 🏗️ Full Architecture So Far
+NotesApplication  (Hilt starts here)  
+↓  
+DatabaseModule    (Hilt knows how to build DB, DAOs)  
+↓  
+NoteRepository    (Hilt builds this with DAOs injected)  
+↓  
+ViewModel         (will get Repository injected) ← next steps  
+↓  
+UI Screens        (will get ViewModel injected)  ← next steps  
