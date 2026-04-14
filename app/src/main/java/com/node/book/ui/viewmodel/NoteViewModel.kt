@@ -19,15 +19,12 @@ import javax.inject.Inject
 class NoteViewModel @Inject constructor(
     private val repository: NoteRepository
 ) : ViewModel() {
-
     // ─── Search ──────────────────────────────────────────
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
-
     // ─── Current Folder Filter ───────────────────────────
     private val _selectedFolderId = MutableStateFlow<Int?>(null)
     val selectedFolderId: StateFlow<Int?> = _selectedFolderId.asStateFlow()
-
     // ─── Notes List (reacts to search + folder filter) ───
     val notes: StateFlow<List<Note>> = combine(
         _searchQuery,
@@ -48,9 +45,7 @@ class NoteViewModel @Inject constructor(
     // ─── Currently Opened Note ───────────────────────────
     private val _selectedNote = MutableStateFlow<Note?>(null)
     val selectedNote: StateFlow<Note?> = _selectedNote.asStateFlow()
-
     // ─── Actions ─────────────────────────────────────────
-
     fun onSearchQueryChange(query: String) {
         _searchQuery.value = query
     }

@@ -336,3 +336,112 @@ NoteViewModel / FolderViewModel   ← we are here ✅
       ↓
 UI Screens                        ← next steps
 ```
+
+---
+
+# Navigation Setup (The Roads Between Screens)
+- In a multi-screen app need a system to move between screens.
+- Jetpack Navigation Compose handles this. 
+- Think of it like a GPS system for your app:
+
+```
+Home Screen  →  "navigate to NoteEditor"
+NavHost      →  finds the route, loads the screen
+NoteEditor   →  opens ✅
+User hits back
+NavHost      →  pops back to Home ✅
+```
+
+# 💡 Two Core Concepts
+1. Routes — Every Screen Has an Address  
+   Just like a website URL:
+```
+google.com/home      ← website route
+google.com/settings  ← website route
+
+notes/home           ← our app route
+notes/editor/42      ← our app route (note id = 42)
+```
+
+2. NavHost — The Traffic Controller  
+   One central place that says:  
+
+```
+"If route is home    → show HomeScreen"
+"If route is editor  → show NoteEditorScreen"
+```
+
+### 📄 Files We Create Today
+```
+utils/
+└── Screen.kt             ← All route definitions
+
+ui/
+└── NotesNavHost.kt       ← Navigation graph
+
+MainActivity.kt           ← Updated to use NavHost
+```
+
+---
+
+# 💡 Key Concepts Explained
+
+`sealed class Screen(val route: String)`
+
+- A sealed class means only these exact screens exist — nothing else can be added accidentally.
+- The compiler knows every possible screen, so if you forget to handle one, it warns you.
+
+### Compare
+```
+// ❌ Stringly typed — easy to make typos
+navController.navigate("hoem")   // typo, crashes at runtime
+
+// ✅ Sealed class — compiler catches mistakes
+navController.navigate(Screen.Home.route)  // safe ✅
+```
+
+### Passing Data Between Screens
+
+```
+// Route definition — like a URL template
+"note_editor/{noteId}"
+
+// Actual navigation call
+navController.navigate(Screen.NoteEditor.createRoute(noteId = 42))
+// becomes → "note_editor/42"
+
+// Receiving end — extracts the value back
+val noteId = backStackEntry.arguments?.getInt("noteId")
+```
+
+### Why noteId = -1 for New Notes?
+```
+object NoteEditor : Screen("note_editor/{noteId}") {
+    fun createRoute(noteId: Int = -1) = "note_editor/$noteId"
+}
+```
+
+### We reuse the same screen for both creating and editing:
+
+```
+noteId = -1  →  "this is a brand new note"
+noteId = 42  →  "load and edit note with id 42"
+```
+
+---
+
+# 🏗️ Architecture So Far
+```
+NotesDatabase
+      ↓
+NoteDao / FolderDao
+      ↓
+NoteRepository
+      ↓
+NoteViewModel / FolderViewModel
+      ↓
+Screen.kt → route addresses
+NotesNavHost → traffic controller   ← we are here ✅
+      ↓
+Actual Screens                      ← next steps
+```
