@@ -7,8 +7,6 @@ import androidx.room.PrimaryKey
 data class Folder(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-
     val name: String,
-
     val createdAt: Long = System.currentTimeMillis()
 )

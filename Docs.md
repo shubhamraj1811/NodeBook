@@ -52,52 +52,50 @@ com.notes.app/
 
 ```
 NotesApp/  
-├── build.gradle.kts          ← Project-level (global settings)  
+├── build.gradle.kts            ← Project-level (global settings)  
 └── app/  
-└── build.gradle.kts      ← App-level (App's libraries) ← we edit this most
+└── build.gradle.kts            ← App-level (App's libraries) ← we edit this most
 ```
 
 **Why two?** : Project-level applies to the whole project (like plugin versions). App-level is specific to app module.
 
 
-## 🔄 Now Sync Gradle
-> After saving all 3 files:
+## 🔄 Sync Gradle
 
 - Look for the "Sync Now" bar that appears at the top
 - Or go to File → Sync Project with Gradle Files
 
-## 💡 What Did We Just Do?
+## 💡 What?
 
-| What?               | Why?                                                                      |
-|---------------------|---------------------------------------------------------------------------|
-| libs.versions.toml  | One place for ALL version numbers — change once, updates everywhere       |
-| composeBom          | Bill of Materials — Google guarantees all Compose libs                    |
-| ksp instead of kapt | Newer, 2x faster annotation processor for Room & Hilt                     |
-| hilt                | Pro-grade dependency injection — we'll explain this deeply when we use it |
+| What?               | Why?                                                                     |
+|---------------------|--------------------------------------------------------------------------|
+| libs.versions.toml  | One place for ALL version numbers — change once, updates everywhere      |
+| composeBom          | Bill of Materials — Google guarantees all Compose libs                   |
+| ksp instead of kapt | Newer, 2x faster annotation processor for Room & Hilt                    |
+| hilt                | Pro-grade dependency injection                                           |
 
 ---
 
 ## Data Models (The Blueprint of Our App)
-A data class is a special Kotlin class whose only job is to hold data. Kotlin auto-generates equals(), hashCode(), toString() for you.
+- A data class is a special Kotlin class whose only job is to hold data.
+- Kotlin auto-generates equals(), hashCode(), toString().
 
-## 📁 First — Create the Package Structure
+## 📁 Create the Package Structure
 ```
-com.notes.app.data.model   
-com.notes.app.data.local  
-com.notes.app.data.repository  
-com.notes.app.di  
-com.notes.app.ui.screens  
-com.notes.app.ui.components  
-com.notes.app.ui.theme  
-com.notes.app.ui.viewmodel  
-com.notes.app.utils
+com.node.book.data.model   
+com.node.book.data.local  
+com.node.book.data.repository  
+com.node.book.di  
+com.node.book.ui.screens  
+com.node.book.ui.components  
+com.node.book.ui.theme  
+com.node.book.ui.viewmodel  
+com.node.book.utils
 ```
 
-> 💡 Why do this first? Clean package structure = clean mind.  
-> Every file has a home.  
-> This is how professional projects are organized — you can onboard a new developer and they instantly know where everything lives.
+---
 
-## 💡 Let's Understand Every Annotation
+## 💡 Annotation
 | Annotation                       | Meaning                                                                              |
 |----------------------------------|--------------------------------------------------------------------------------------|
 | @Entity                          | Tells Room "this class = a database table                                            |
@@ -111,7 +109,7 @@ Folder Table              Note Table
 ──────────────            ──────────────────────────  
 id = 1  "C++ Notes"  ←── folderId = 1  "Pointers note"  
 id = 2  "Python"     ←── folderId = 1  "Memory note"  ←── folderId = 2  "Lists note"  
-folderId = null  "Random note"
+folderId = null         "Random note"
 ```
 --- 
 
@@ -119,9 +117,12 @@ folderId = null  "Random note"
 
 ## 💡 What is Room?
 - Room is Google's official database library.
-- It's a wrapper around SQLite (which is what Android uses under the hood) but instead of writing raw SQL everywhere, you write Kotlin interfaces and Room generates all the messy SQL code for you.
+- It's a wrapper around SQLite (which is what Android uses under the hood) but instead of writing raw SQL everywhere, we write Kotlin interfaces and Room generates all the messy SQL code for.
 
-> You write:  getNoteById(id) || Room does:  SELECT * FROM notes WHERE id = :id
+> We write:  getNoteById(id) || Room does:  SELECT * FROM notes WHERE id = :id
+
+---
+
 ```
 data.local/  
 ├── FolderDao.kt      ← SQL queries for folders  
@@ -133,17 +134,17 @@ data.local/
 
 > What is a DAO?
 
-**Data Access Object —** it's just an interface where you define every operation your app can do with the database. Room reads this interface and generates the actual implementation at compile time.
+**Data Access Object —** it's just an interface where we define every operation our app can do with the database. Room reads this interface and generates the actual implementation at compile time.
 
 > What is Flow?
 
 `fun getAllNotes(): Flow<List<Note>>`
-Flow is like a live stream of data. When any note in the database changes, your UI automatically gets the update without you asking for it. Perfect for a notes app.
+Flow is like a live stream of data. When any note in the database changes, our UI automatically gets the update without us asking for it. Perfect for a notes app.
 
 > What is suspend?
 
 `suspend fun deleteNote(note: Note)`
-suspend means "this runs on a background thread". Database operations can't run on the main UI thread — it would freeze your app. suspend functions must be called from a coroutine.
+suspend means "this runs on a background thread". Database operations can't run on the main UI thread — it would freeze app. suspend functions must be called from a coroutine.
 
 > The difference visualized:
 
@@ -155,7 +156,7 @@ deleteNote()  → suspend ✅ (one-time action)
 
 > OnConflictStrategy.REPLACE
 
-If you try to insert a note with an ID that already exists — just replace it. This is how we handle edits cleanly.
+If we try to insert a note with an ID that already exists — just replace it. This is how we handle edits cleanly.
 
 > 🏗️ The Full Picture So Far
 > 
@@ -445,3 +446,32 @@ NotesNavHost → traffic controller   ← we are here ✅
       ↓
 Actual Screens                      ← next steps
 ```
+
+---
+
+# Theme Setup (Colors, Typography, Dark/Light Mode)
+
+## 💡 What is a Theme in Compose?
+A theme is a single source of truth for how your app looks. Instead of hardcoding colors everywhere:
+
+```agsl
+// ❌ Hardcoded everywhere — nightmare to maintain
+Text(color = Color(0xFF1A1A1A))
+Card(backgroundColor = Color(0xFFFFFFFF))
+
+// ✅ Themed — change once, updates everywhere
+Text(color = MaterialTheme.colorScheme.onSurface)
+Card(backgroundColor = MaterialTheme.colorScheme.surface)
+```
+
+When user switches dark mode → every color updates automatically. That's the power of theming.
+
+📄 Files We Touch Today
+
+```
+ui.theme/
+├── Color.kt        ← every color defined here
+├── Type.kt         ← fonts and text sizes
+└── Theme.kt        ← puts it all together
+```
+
