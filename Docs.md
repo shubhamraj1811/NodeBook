@@ -475,3 +475,12 @@ ui.theme/
 └── Theme.kt        ← puts it all together
 ```
 
+## 🏗️ Architecture So Far
+
+```
+NotesDatabase → DAOs → Repository → ViewModels → Navigation
+      ↓
+Theme (Colors + Typography)   ← we are here ✅
+      ↓
+UI Screens                    ← next step!
+```

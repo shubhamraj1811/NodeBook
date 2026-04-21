@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
 import com.node.book.ui.NotesNavHost
-import com.node.book.ui.theme.NodeBookTheme
+import com.node.book.ui.theme.NotesAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            NodeBookTheme { // ← was NotesAppTheme
+            NotesAppTheme { // ← was NotesAppTheme
                 val navController = rememberNavController()
                 NotesNavHost(navController = navController)
             }
