@@ -542,9 +542,10 @@ Text        #1C1C1E (black)   Text        #FFFFFF (white)
 ## 🏗️ Architecture So Far
 
 ```
-NotesDatabase → DAOs → Repository → ViewModels → Navigation
+Database → DAOs → Repository → ViewModels → Navigation → Theme
       ↓
-Theme (Colors + Typography)   ← we are here ✅
+HomeScreen ✅  ← we are here
       ↓
-UI Screens                    ← next step!
+NoteEditorScreen  ← next!
+SettingsScreen    ← after that
 ```

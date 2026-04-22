@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.node.book.utils.Screen
+import com.node.book.ui.screens.HomeScreen
 
 @Composable
 fun NotesNavHost(navController: NavHostController) {
@@ -18,7 +19,17 @@ fun NotesNavHost(navController: NavHostController) {
 
         // ─── Home Screen ──────────────────────────────────
         composable(route = Screen.Home.route) {
-            // HomeScreen() ← we'll plug this in next step
+            HomeScreen(
+                onNoteClick = { noteId ->
+                    navController.navigate(Screen.NoteEditor.createRoute(noteId))
+                },
+                onCreateNote = {
+                    navController.navigate(Screen.NoteEditor.createRoute())
+                },
+                onSettingsClick = {
+                    navController.navigate(Screen.Settings.route)
+                }
+            )
         }
 
         // ─── Note Editor Screen ───────────────────────────
