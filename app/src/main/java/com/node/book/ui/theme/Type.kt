@@ -48,6 +48,7 @@ val Typography = Typography(
         lineHeight = 24.sp
     ),
 
+    // ─── Note content in editor ───────────────────────────
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,

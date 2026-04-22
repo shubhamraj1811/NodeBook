@@ -484,3 +484,67 @@ Theme (Colors + Typography)   ← we are here ✅
       ↓
 UI Screens                    ← next step!
 ```
+
+---
+
+# Home Screen (The First Screen You'll See!)
+
+## 💡 Plan for Home Screen
+
+```
+HomeScreen
+├── TopBar        (search bar + hamburger menu icon)
+├── DrawerContent (side menu with folders + navigation)
+├── NoteCard      (each note in the list)
+└── FAB           (floating button to create new note)
+```
+
+> Professional rule — never build one giant file. Break UI into small reusable components.
+
+```
+ui.components/
+├── NoteCard.kt
+└── DrawerContent.kt
+
+ui.screens/
+└── HomeScreen.kt
+```
+
+## The Color Scheme Slots
+
+```
+primary          → main brand color (our yellow)
+background       → screen background
+surface          → cards, sheets, dialogs
+onSurface        → text/icons ON top of surface
+surfaceVariant   → slightly different surface (dividers, chips)
+onSurfaceVariant → secondary text color
+error            → delete, warning colors
+```
+
+## isSystemInDarkTheme()
+`darkTheme: Boolean = isSystemInDarkTheme()`  
+
+- By default we follow the system setting.
+- Later in Settings screen we'll override this with the user's manual preference stored in DataStore.
+
+## 🎨 Our Color Palette Visualized
+
+```
+Light Mode                    Dark Mode
+──────────────────────────    ──────────────────────────
+Background  #F2F2F7 (gray)    Background  #1C1C1E (near black)
+Surface     #FFFFFF (white)   Surface     #2C2C2E (dark gray)
+Primary     #FFD60A (yellow)  Primary     #FFD60A (yellow — same)
+Text        #1C1C1E (black)   Text        #FFFFFF (white)
+```
+
+## 🏗️ Architecture So Far
+
+```
+NotesDatabase → DAOs → Repository → ViewModels → Navigation
+      ↓
+Theme (Colors + Typography)   ← we are here ✅
+      ↓
+UI Screens                    ← next step!
+```

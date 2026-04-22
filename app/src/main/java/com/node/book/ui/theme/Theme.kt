@@ -41,6 +41,7 @@ private val DarkColorScheme = darkColorScheme(
     error            = DeleteRed,
 )
 
+// ─── Main App Theme ──────────────────────────────────────
 @Composable
 fun NotesAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),  // follows system by default
@@ -59,6 +60,7 @@ fun NotesAppTheme(
         }
     }
 
+    // ─── Apply theme ──────────────────────────────────────
     MaterialTheme(
         colorScheme = colorScheme,
         typography  = Typography,
