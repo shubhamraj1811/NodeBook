@@ -549,3 +549,23 @@ HomeScreen ✅  ← we are here
 NoteEditorScreen  ← next!
 SettingsScreen    ← after that
 ```
+
+# Note Editor Screen (The Heart of the App)
+
+This is the biggest screen. It has:
+
+- Title + content editing
+- Text formatting (bold, italic, size)
+- Background color picker
+- Folder assignment
+- Auto-save
+
+### Files
+```
+ui.components/
+└── FormattingToolbar.kt
+
+ui.screens/
+└── NoteEditorScreen.kt
+```
+
