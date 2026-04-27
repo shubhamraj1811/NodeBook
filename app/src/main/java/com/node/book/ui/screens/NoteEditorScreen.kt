@@ -1,9 +1,10 @@
 package com.node.book.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -22,6 +23,9 @@ import com.node.book.data.model.Note
 import com.node.book.ui.components.FormattingToolbar
 import com.node.book.ui.viewmodel.FolderViewModel
 import com.node.book.ui.viewmodel.NoteViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,7 +55,7 @@ fun NoteEditorScreen(
 
     LaunchedEffect(noteId) {
         if (noteId != -1) {
-            NoteViewModel.getNoteById(noteId)?.let { note ->
+            noteViewModel.getNoteById(noteId)?.let { note ->  // ← fix: instance not class
                 existingNote = note
                 title = note.title
                 content = note.content
@@ -109,7 +113,6 @@ fun NoteEditorScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // No folder option
                 ListItem(
                     headlineContent = { Text("No Folder") },
                     leadingContent = {
@@ -132,7 +135,6 @@ fun NoteEditorScreen(
 
                 HorizontalDivider()
 
-                // Folder options
                 folders.forEach { folder ->
                     ListItem(
                         headlineContent = { Text(folder.name) },
@@ -174,7 +176,6 @@ fun NoteEditorScreen(
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Back button
             IconButton(onClick = { saveNote() }) {
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew,
@@ -185,7 +186,6 @@ fun NoteEditorScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Folder button
             IconButton(onClick = { showFolderSheet = true }) {
                 Icon(
                     imageVector = Icons.Default.Folder,
@@ -197,7 +197,6 @@ fun NoteEditorScreen(
                 )
             }
 
-            // Formatting toggle
             IconButton(onClick = { showToolbar = !showToolbar }) {
                 Icon(
                     imageVector = Icons.Default.TextFormat,
@@ -209,7 +208,6 @@ fun NoteEditorScreen(
                 )
             }
 
-            // Save button
             IconButton(onClick = { saveNote() }) {
                 Icon(
                     imageVector = Icons.Default.Check,
@@ -219,7 +217,7 @@ fun NoteEditorScreen(
             }
         }
 
-        // ─── Formatting Toolbar (toggleable) ──────────────
+        // ─── Formatting Toolbar ───────────────────────────
         if (showToolbar) {
             FormattingToolbar(
                 isBold = isBold,
@@ -228,12 +226,8 @@ fun NoteEditorScreen(
                 selectedColor = backgroundColor,
                 onBoldToggle = { isBold = !isBold },
                 onItalicToggle = { isItalic = !isItalic },
-                onTextSizeIncrease = {
-                    if (textSize < 32f) textSize += 2f
-                },
-                onTextSizeDecrease = {
-                    if (textSize > 10f) textSize -= 2f
-                },
+                onTextSizeIncrease = { if (textSize < 32f) textSize += 2f },
+                onTextSizeDecrease = { if (textSize > 10f) textSize -= 2f },
                 onColorSelected = { backgroundColor = it }
             )
         }
@@ -245,8 +239,6 @@ fun NoteEditorScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 12.dp)
         ) {
-
-            // Title field
             BasicTextField(
                 value = title,
                 onValueChange = { title = it },
@@ -263,8 +255,7 @@ fun NoteEditorScreen(
                             style = TextStyle(
                                 fontSize = (textSize + 6).sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    .copy(alpha = 0.5f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                             )
                         )
                     }
@@ -275,7 +266,6 @@ fun NoteEditorScreen(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Timestamp
             Text(
                 text = formatDate(System.currentTimeMillis()),
                 style = MaterialTheme.typography.bodySmall,
@@ -283,12 +273,9 @@ fun NoteEditorScreen(
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-            )
+            HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Content field
             BasicTextField(
                 value = content,
                 onValueChange = { content = it },
@@ -304,8 +291,7 @@ fun NoteEditorScreen(
                             text = "Start writing...",
                             style = TextStyle(
                                 fontSize = textSize.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    .copy(alpha = 0.5f)
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                             )
                         )
                     }
@@ -319,6 +305,12 @@ fun NoteEditorScreen(
     }
 }
 
-// ─── Helper extension for clickable with ripple ───────────
+// ─── Date formatter ──────────────────────────────────────  ← NEW
+private fun formatDate(timestamp: Long): String {
+    val sdf = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+    return sdf.format(Date(timestamp))
+}
+
+// ─── Clickable with ripple ────────────────────────────────
 private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier =
     this.clickable(onClick = onClick)

@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.node.book.utils.Screen
 import com.node.book.ui.screens.HomeScreen
+import com.node.book.ui.screens.NoteEditorScreen
 
 @Composable
 fun NotesNavHost(navController: NavHostController) {
@@ -43,7 +44,10 @@ fun NotesNavHost(navController: NavHostController) {
             )
         ) { backStackEntry ->
             val noteId = backStackEntry.arguments?.getInt("noteId") ?: -1
-            // NoteEditorScreen(noteId) ← we'll plug this in later
+            NoteEditorScreen(
+                noteId = noteId,
+                onBack = { navController.popBackStack() }
+            )
         }
 
         // ─── Folder Detail Screen ─────────────────────────

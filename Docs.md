@@ -569,3 +569,13 @@ ui.screens/
 └── NoteEditorScreen.kt
 ```
 
+## 🏗️ Architecture So Far
+
+```
+Database → DAOs → Repository → ViewModels → Navigation → Theme
+      ↓
+HomeScreen ✅
+NoteEditorScreen ✅   ← we are here
+      ↓
+SettingsScreen        ← next!
+```
