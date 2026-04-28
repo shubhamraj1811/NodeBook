@@ -579,3 +579,52 @@ NoteEditorScreen ✅   ← we are here
       ↓
 SettingsScreen        ← next!
 ```
+
+# Settings Screen (Owner Name + Dark/Light Mode)
+
+This screen needs DataStore — remember we added it in Step 2. DataStore is like a small key-value storage that persists across app restarts. Perfect for settings.
+
+## 💡 Plan for Settings Screen
+
+```
+Settings
+├── UserPreferencesManager   ← reads/writes to DataStore
+├── SettingsViewModel        ← exposes settings as StateFlow
+└── SettingsScreen           ← the UI
+```
+
+We also need to connect dark mode back to MainActivity so the whole app switches theme.
+
+## Files We Create Today
+
+```
+utils/
+└── UserPreferencesManager.kt
+
+ui.viewmodel/
+└── SettingsViewModel.kt
+
+ui.screens/
+└── SettingsScreen.kt
+
+Plus updates to MainActivity.kt and NotesNavHost.kt
+```
+
+# 💡 Key Concepts Explained
+
+> Why DataStore over SharedPreferences?
+
+```
+SharedPreferences (old way)  →  synchronous, can block UI thread
+DataStore (modern way)       →  async, Flow-based, safe ✅
+```
+
+## 🏗️ Complete Architecture
+
+```
+NotesDatabase → DAOs → Repository → ViewModels → Navigation → Theme
+      ↓
+HomeScreen      ✅
+NoteEditorScreen ✅
+SettingsScreen   ✅   ← we are here
+```

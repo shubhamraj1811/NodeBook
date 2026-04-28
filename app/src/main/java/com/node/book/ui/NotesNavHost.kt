@@ -9,10 +9,12 @@ import androidx.navigation.navArgument
 import com.node.book.utils.Screen
 import com.node.book.ui.screens.HomeScreen
 import com.node.book.ui.screens.NoteEditorScreen
+import com.node.book.ui.screens.SettingsScreen
 
 @Composable
 fun NotesNavHost(navController: NavHostController) {
 
+    // ─── NavHost ───────────────────────────────────────
     NavHost(
         navController = navController,
         startDestination = Screen.Home.route    // app always opens here
@@ -69,7 +71,9 @@ fun NotesNavHost(navController: NavHostController) {
 
         // ─── Settings Screen ──────────────────────────────
         composable(route = Screen.Settings.route) {
-            // SettingsScreen() ← plugged in later
+            SettingsScreen(
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

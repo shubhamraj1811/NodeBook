@@ -1,6 +1,8 @@
 package com.node.book.di
 
-// --- work of this file :
+// --- Imports -----------------
+
+import com.node.book.utils.UserPreferencesManager
 import android.content.Context
 import androidx.room.Room
 import com.node.book.data.local.FolderDao
@@ -46,4 +48,11 @@ object DatabaseModule {
     @Singleton
     fun provideFolderDao(database: NotesDatabase): FolderDao =
         database.folderDao()
+
+    // --- Provides UserPreferencesManager -----------------
+    @Provides
+    @Singleton
+    fun provideUserPreferencesManager(
+        @ApplicationContext context: Context
+    ): UserPreferencesManager = UserPreferencesManager(context)
 }
