@@ -629,3 +629,35 @@ NoteEditorScreen ✅
 SettingsScreen   ✅   ← we are here
 ```
 
+# ✅ Final Test Checklist
+
+```
+HOME SCREEN
+□ Notes list shows correctly
+□ Search bar filters notes live
+□ FAB creates new note
+□ Drawer opens with hamburger icon
+□ Owner name shows in drawer header
+
+FOLDERS
+□ + button in drawer creates a folder
+□ Tapping folder opens FolderDetailScreen
+□ Notes in folder show correctly
+□ Rename folder works
+□ Delete folder keeps notes in All Notes
+
+NOTE EDITOR
+□ Create new note → saves on back
+□ Edit existing note → changes saved
+□ Bold / Italic toggle works
+□ Text size increase / decrease works
+□ Background color changes
+□ Folder assignment works
+□ Swipe right on note card → deletes it
+□ Physical back button saves note
+
+SETTINGS
+□ Change owner name → updates in drawer
+□ System theme toggle works
+□ Manual dark/light toggle works
+```

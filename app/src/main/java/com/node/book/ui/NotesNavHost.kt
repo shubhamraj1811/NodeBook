@@ -10,6 +10,7 @@ import com.node.book.utils.Screen
 import com.node.book.ui.screens.HomeScreen
 import com.node.book.ui.screens.NoteEditorScreen
 import com.node.book.ui.screens.SettingsScreen
+import com.node.book.ui.screens.FolderDetailScreen
 
 @Composable
 fun NotesNavHost(navController: NavHostController) {
@@ -31,6 +32,11 @@ fun NotesNavHost(navController: NavHostController) {
                 },
                 onSettingsClick = {
                     navController.navigate(Screen.Settings.route)
+                },
+                onFolderClick = { folderId, folderName ->
+                    navController.navigate(
+                        Screen.FolderDetail.createRoute(folderId, folderName)
+                    )
                 }
             )
         }
@@ -66,7 +72,17 @@ fun NotesNavHost(navController: NavHostController) {
         ) { backStackEntry ->
             val folderId = backStackEntry.arguments?.getInt("folderId") ?: 0
             val folderName = backStackEntry.arguments?.getString("folderName") ?: ""
-            // FolderDetailScreen(folderId, folderName) ← plugged in later
+            FolderDetailScreen(
+                folderId = folderId,
+                folderName = folderName,
+                onNoteClick = { noteId ->
+                    navController.navigate(Screen.NoteEditor.createRoute(noteId))
+                },
+                onCreateNote = {
+                    navController.navigate(Screen.NoteEditor.createRoute())
+                },
+                onBack = { navController.popBackStack() }
+            )
         }
 
         // ─── Settings Screen ──────────────────────────────
