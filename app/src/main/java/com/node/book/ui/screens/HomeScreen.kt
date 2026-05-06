@@ -18,6 +18,7 @@ import com.node.book.ui.components.DrawerContent
 import com.node.book.ui.components.NoteCard
 import com.node.book.ui.viewmodel.FolderViewModel
 import com.node.book.ui.viewmodel.NoteViewModel
+import com.node.book.ui.viewmodel.SettingsViewModel
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,11 +26,15 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onNoteClick: (Int) -> Unit,
     onCreateNote: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onFolderClick: (Int, String) -> Unit
 ) {
     // ─── ViewModels (Hilt gives these automatically) ──────
     val noteViewModel: NoteViewModel = hiltViewModel()
     val folderViewModel: FolderViewModel = hiltViewModel()
+
+    val settingsViewModel: SettingsViewModel = hiltViewModel()
+    val ownerName by settingsViewModel.ownerName.collectAsState()
 
     // ─── Collect State ────────────────────────────────────
     val notes by noteViewModel.notes.collectAsState()
@@ -56,13 +61,14 @@ fun HomeScreen(
             DrawerContent(
                 folders = folders,
                 selectedFolderId = selectedFolderId,
+                ownerName = ownerName,
                 onAllNotesClick = {
                     noteViewModel.onFolderSelected(null)
                     scope.launch { drawerState.close() }
                 },
                 onFolderClick = { folder ->
-                    noteViewModel.onFolderSelected(folder.id)
                     scope.launch { drawerState.close() }
+                    onFolderClick(folder.id, folder.name)
                 },
                 onSettingsClick = {
                     scope.launch { drawerState.close() }

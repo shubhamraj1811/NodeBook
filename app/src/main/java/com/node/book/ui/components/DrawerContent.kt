@@ -21,6 +21,7 @@ import com.node.book.data.model.Folder
 fun DrawerContent(
     folders: List<Folder>,
     selectedFolderId: Int?,
+    ownerName: String,
     onAllNotesClick: () -> Unit,
     onFolderClick: (Folder) -> Unit,
     onSettingsClick: () -> Unit,
@@ -35,7 +36,7 @@ fun DrawerContent(
             .padding(vertical = 48.dp, horizontal = 16.dp)
     ) {
 
-        // ─── App Logo + Name ──────────────────────────────
+        // ─── App Logo + Name ──────────────────────────────────────
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 8.dp)
@@ -47,11 +48,18 @@ fun DrawerContent(
                 modifier = Modifier.size(36.dp)
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "My Notes",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
+            Column {
+                Text(
+                    text = ownerName,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "My Notes",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
         Spacer(modifier = Modifier.height(32.dp))
         HorizontalDivider()
