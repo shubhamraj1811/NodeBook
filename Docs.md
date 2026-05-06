@@ -628,3 +628,4 @@ HomeScreen      ✅
 NoteEditorScreen ✅
 SettingsScreen   ✅   ← we are here
 ```
+

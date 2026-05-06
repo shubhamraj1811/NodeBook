@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -23,9 +24,8 @@ import com.node.book.data.model.Note
 import com.node.book.ui.components.FormattingToolbar
 import com.node.book.ui.viewmodel.FolderViewModel
 import com.node.book.ui.viewmodel.NoteViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.node.book.ui.components.formatDate
+import androidx.activity.compose.BackHandler
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -159,6 +159,11 @@ fun NoteEditorScreen(
                 Spacer(modifier = Modifier.height(32.dp))
             }
         }
+    }
+
+    // ─── Handle system back button ────────────────────────────
+    BackHandler {
+        saveNote()
     }
 
     // ─── Main Editor Layout ───────────────────────────────
@@ -305,11 +310,11 @@ fun NoteEditorScreen(
     }
 }
 
-// ─── Date formatter ──────────────────────────────────────  ← NEW
-private fun formatDate(timestamp: Long): String {
-    val sdf = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
-    return sdf.format(Date(timestamp))
-}
+//// ─── Date formatter ──────────────────────────────────────  ← NEW
+//private fun formatDate(timestamp: Long): String {
+//    val sdf = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
+//    return sdf.format(Date(timestamp))
+//}
 
 // ─── Clickable with ripple ────────────────────────────────
 private fun Modifier.clickableWithRipple(onClick: () -> Unit): Modifier =
