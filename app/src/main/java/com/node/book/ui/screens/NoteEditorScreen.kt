@@ -21,11 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.node.book.data.model.Note
-import com.node.book.ui.components.FormattingToolbar
+//import com.node.book.ui.components.FormattingToolbar
 import com.node.book.ui.viewmodel.FolderViewModel
 import com.node.book.ui.viewmodel.NoteViewModel
 import com.node.book.ui.components.formatDate
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.shape.CircleShape
+import com.node.book.ui.components.FormattingBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,14 +42,16 @@ fun NoteEditorScreen(
     // ─── Local editor state ───────────────────────────────
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
-    var backgroundColor by remember { mutableStateOf("#FFFFFF") }
+    var backgroundColor by remember { mutableStateOf("default") }
     var textSize by remember { mutableFloatStateOf(16f) }
     var isBold by remember { mutableStateOf(false) }
     var isItalic by remember { mutableStateOf(false) }
     var selectedFolderId by remember { mutableStateOf<Int?>(null) }
+    var textColor by remember { mutableStateOf("default") }
+    var showFormattingSheet by remember { mutableStateOf(false) }
 
     // ─── Toolbar + Folder sheet visibility ───────────────
-    var showToolbar by remember { mutableStateOf(false) }
+//    var showToolbar by remember { mutableStateOf(false) }
     var showFolderSheet by remember { mutableStateOf(false) }
 
     // ─── Load existing note if editing ───────────────────
@@ -64,6 +68,7 @@ fun NoteEditorScreen(
                 isBold = note.isBold
                 isItalic = note.isItalic
                 selectedFolderId = note.folderId
+                textColor = note.textColor
             }
         }
     }
@@ -80,6 +85,7 @@ fun NoteEditorScreen(
             content = content.trim(),
             backgroundColor = backgroundColor,
             textSize = textSize,
+            textColor = textColor,
             isBold = isBold,
             isItalic = isItalic,
             folderId = selectedFolderId,
@@ -91,10 +97,21 @@ fun NoteEditorScreen(
     }
 
     // ─── Background color of the editor ──────────────────
-    val bgColor = try {
-        Color(android.graphics.Color.parseColor(backgroundColor))
-    } catch (e: Exception) {
-        MaterialTheme.colorScheme.surface
+    val themeSurface = MaterialTheme.colorScheme.surface
+    val bgColor = remember(backgroundColor, themeSurface) {
+        if (backgroundColor == "default") themeSurface
+        else try {
+            Color(android.graphics.Color.parseColor(backgroundColor))
+        } catch (e: Exception) { themeSurface }
+    }
+
+    // added this
+    val themeOnSurface = MaterialTheme.colorScheme.onSurface
+    val resolvedTextColor = remember(textColor, themeOnSurface) {
+        if (textColor == "default") themeOnSurface
+        else try {
+            Color(android.graphics.Color.parseColor(textColor))
+        } catch (e: Exception) { themeOnSurface }
     }
 
     // ─── Folder bottom sheet ──────────────────────────────
@@ -166,6 +183,24 @@ fun NoteEditorScreen(
         saveNote()
     }
 
+    // ─── Formatting Bottom Sheet ──────────────────────────────
+    if (showFormattingSheet) {
+        FormattingBottomSheet(
+            isBold = isBold,
+            isItalic = isItalic,
+            textSize = textSize,
+            selectedBgColor = backgroundColor,
+            selectedTextColor = textColor,
+            onBoldToggle = { isBold = !isBold },
+            onItalicToggle = { isItalic = !isItalic },
+            onTextSizeIncrease = { if (textSize < 32f) textSize += 2f },
+            onTextSizeDecrease = { if (textSize > 10f) textSize -= 2f },
+            onBgColorSelected = { backgroundColor = it },
+            onTextColorSelected = { textColor = it },
+            onDismiss = { showFormattingSheet = false }
+        )
+    }
+
     // ─── Main Editor Layout ───────────────────────────────
     Column(
         modifier = Modifier
@@ -202,17 +237,6 @@ fun NoteEditorScreen(
                 )
             }
 
-            IconButton(onClick = { showToolbar = !showToolbar }) {
-                Icon(
-                    imageVector = Icons.Default.TextFormat,
-                    contentDescription = "Format",
-                    tint = if (showToolbar)
-                        MaterialTheme.colorScheme.primary
-                    else
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
             IconButton(onClick = { saveNote() }) {
                 Icon(
                     imageVector = Icons.Default.Check,
@@ -222,20 +246,20 @@ fun NoteEditorScreen(
             }
         }
 
-        // ─── Formatting Toolbar ───────────────────────────
-        if (showToolbar) {
-            FormattingToolbar(
-                isBold = isBold,
-                isItalic = isItalic,
-                textSize = textSize,
-                selectedColor = backgroundColor,
-                onBoldToggle = { isBold = !isBold },
-                onItalicToggle = { isItalic = !isItalic },
-                onTextSizeIncrease = { if (textSize < 32f) textSize += 2f },
-                onTextSizeDecrease = { if (textSize > 10f) textSize -= 2f },
-                onColorSelected = { backgroundColor = it }
-            )
-        }
+//        // ─── Formatting Toolbar ───────────────────────────
+//        if (showToolbar) {
+//            FormattingToolbar(
+//                isBold = isBold,
+//                isItalic = isItalic,
+//                textSize = textSize,
+//                selectedColor = backgroundColor,
+//                onBoldToggle = { isBold = !isBold },
+//                onItalicToggle = { isItalic = !isItalic },
+//                onTextSizeIncrease = { if (textSize < 32f) textSize += 2f },
+//                onTextSizeDecrease = { if (textSize > 10f) textSize -= 2f },
+//                onColorSelected = { backgroundColor = it }
+//            )
+//        }
 
         // ─── Scrollable Writing Area ──────────────────────
         Column(
@@ -251,7 +275,7 @@ fun NoteEditorScreen(
                     fontSize = (textSize + 6).sp,
                     fontWeight = if (isBold) FontWeight.Bold else FontWeight.SemiBold,
                     fontStyle = if (isItalic) FontStyle.Italic else FontStyle.Normal,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = resolvedTextColor
                 ),
                 decorationBox = { innerTextField ->
                     if (title.isEmpty()) {
@@ -288,7 +312,7 @@ fun NoteEditorScreen(
                     fontSize = textSize.sp,
                     fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
                     fontStyle = if (isItalic) FontStyle.Italic else FontStyle.Normal,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = resolvedTextColor
                 ),
                 decorationBox = { innerTextField ->
                     if (content.isEmpty()) {
@@ -306,6 +330,28 @@ fun NoteEditorScreen(
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 300.dp)
             )
+
+            // ─── Circular Pen FAB (formatting) ───────────────
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 20.dp, bottom = 24.dp),
+                contentAlignment = Alignment.BottomEnd
+            ) {
+                FloatingActionButton(
+                    onClick = { showFormattingSheet = true },
+                    shape = CircleShape,
+                    modifier = Modifier.size(52.dp),
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Format Text",
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(22.dp)
+                    )
+                }
+            }
         }
     }
 }

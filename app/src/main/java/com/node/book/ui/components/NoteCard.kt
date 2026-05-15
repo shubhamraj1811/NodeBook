@@ -68,10 +68,15 @@ fun NoteCard(
         }
     ) {
         // ─── The actual Note Card ─────────────────────────
-        val bgColor = try {
-            Color(android.graphics.Color.parseColor(note.backgroundColor))
-        } catch (e: Exception) {
-            MaterialTheme.colorScheme.surface
+        // ─── Theme-aware card background ──────────────────────────
+        val bgColor = if (note.backgroundColor == "default") {
+            MaterialTheme.colorScheme.surface       // ← follows dark/light theme
+        } else {
+            try {
+                Color(android.graphics.Color.parseColor(note.backgroundColor))
+            } catch (e: Exception) {
+                MaterialTheme.colorScheme.surface
+            }
         }
 
         Card(

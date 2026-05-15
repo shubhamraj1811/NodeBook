@@ -34,7 +34,9 @@ object DatabaseModule {
             context,
             NotesDatabase::class.java,
             NotesDatabase.DATABASE_NAME
-        ).build()
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 
     // --- Provides NoteDao -----------------

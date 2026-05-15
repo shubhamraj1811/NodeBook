@@ -9,7 +9,7 @@ import com.node.book.data.model.Note
 // --- Database class ----------
 @Database(
     entities = [Note::class, Folder::class],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 
