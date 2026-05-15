@@ -27,9 +27,10 @@ data class Note(
 
     val folderId: Int? = null,           // null = note is not in any folder
 
-    val backgroundColor: String = "#FFFFFF",
+    val backgroundColor: String = "#default",
     val backgroundWallpaper: String? = null,
     val textSize: Float = 16f,
+    val textColor: String = "#default",
 
     val isBold: Boolean = false,
     val isItalic: Boolean = false,
