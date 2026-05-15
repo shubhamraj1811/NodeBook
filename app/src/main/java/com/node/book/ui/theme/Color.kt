@@ -36,3 +36,13 @@ val NoteColorGray   = Color(0xFFF5F5F5)
 
 // ─── Danger ───────────────────────────────────────────────
 val DeleteRed   = Color(0xFFFF3B30)
+
+// ─── Text Color Options ───────────────────────────────────
+val TextColorBlack  = Color(0xFF000000)
+val TextColorWhite  = Color(0xFFFFFFFF)
+val TextColorBlue   = Color(0xFF007AFF)
+val TextColorRed    = Color(0xFFFF3B30)
+val TextColorGreen  = Color(0xFF34C759)
+val TextColorYellow = Color(0xFFFFD60A)
+val TextColorPink   = Color(0xFFFF2D55)
+val TextColorPurple = Color(0xFFAF52DE)

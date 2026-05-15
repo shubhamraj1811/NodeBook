@@ -17,12 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.node.book.ui.theme.*
 
-// ─── Note background color options ────────────────────────
+// ─── Background color options ──────────────────────────────
 val noteColorOptions = listOf(
-    "#FFFFFF" to NoteColorWhite,
+    "default" to Color.Transparent,
     "#FFF9C4" to NoteColorYellow,
     "#C8E6C9" to NoteColorGreen,
     "#BBDEFB" to NoteColorBlue,
@@ -32,117 +34,186 @@ val noteColorOptions = listOf(
     "#F5F5F5" to NoteColorGray,
 )
 
-// ─── Formatting Toolbar ────────────────────────────────
+// ─── Text color options ────────────────────────────────────
+val textColorOptions = listOf(
+    "default" to Color.Transparent,
+    "#000000" to TextColorBlack,
+    "#FFFFFF" to TextColorWhite,
+    "#007AFF" to TextColorBlue,
+    "#FF3B30" to TextColorRed,
+    "#34C759" to TextColorGreen,
+    "#FFD60A" to TextColorYellow,
+    "#FF2D55" to TextColorPink,
+    "#AF52DE" to TextColorPurple,
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormattingToolbar(
+fun FormattingBottomSheet(
     isBold: Boolean,
     isItalic: Boolean,
     textSize: Float,
-    selectedColor: String,
+    selectedBgColor: String,
+    selectedTextColor: String,
     onBoldToggle: () -> Unit,
     onItalicToggle: () -> Unit,
     onTextSizeIncrease: () -> Unit,
     onTextSizeDecrease: () -> Unit,
-    onColorSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onBgColorSelected: (String) -> Unit,
+    onTextColorSelected: (String) -> Unit,
+    onDismiss: () -> Unit
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 8.dp
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .padding(horizontal = 20.dp)
+                .padding(bottom = 40.dp)
         ) {
 
-            // ─── Row 1: Text Formatting Buttons ───────────
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
+            // ─── Sheet Title ──────────────────────────────
+            Text(
+                text = "Text & Style",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 20.dp)
+            )
 
+            // ─── SECTION: Text Style ──────────────────────
+            SheetSectionLabel("TEXT STYLE")
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 // Bold
-                FormatButton(
-                    icon = Icons.Default.FormatBold,
-                    label = "Bold",
+                FormatChip(
+                    label = "B",
                     isActive = isBold,
-                    onClick = onBoldToggle
+                    onClick = onBoldToggle,
+                    isBold = true
                 )
 
                 // Italic
-                FormatButton(
-                    icon = Icons.Default.FormatItalic,
-                    label = "Italic",
+                FormatChip(
+                    label = "I",
                     isActive = isItalic,
-                    onClick = onItalicToggle
+                    onClick = onItalicToggle,
+                    isItalic = true
                 )
 
-                VerticalDivider(
-                    modifier = Modifier.height(28.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // H1
+                FormatChip(
+                    label = "H1",
+                    isActive = textSize >= 28f,
+                    onClick = { onTextSizeDecrease() /* will be overridden */ }
                 )
 
-                // Text size decrease
-                FormatButton(
-                    icon = Icons.Default.TextDecrease,
-                    label = "Decrease",
-                    isActive = false,
-                    onClick = onTextSizeDecrease
+                // H2
+                FormatChip(
+                    label = "H2",
+                    isActive = textSize in 22f..27f,
+                    onClick = { onTextSizeDecrease() }
                 )
 
-                // Current text size indicator
-                Surface(
-                    shape = RoundedCornerShape(8.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // A- and A+ with size display
+                IconButton(
+                    onClick = onTextSizeDecrease,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                 ) {
-                    Text(
-                        text = "${textSize.toInt()}sp",
-                        style = MaterialTheme.typography.labelLarge,
-                        modifier = Modifier.padding(
-                            horizontal = 10.dp,
-                            vertical = 6.dp
-                        ),
-                        color = MaterialTheme.colorScheme.onSurface
+                    Icon(
+                        Icons.Default.TextDecrease,
+                        contentDescription = "A-",
+                        modifier = Modifier.size(18.dp)
                     )
                 }
 
-                // Text size increase
-                FormatButton(
-                    icon = Icons.Default.TextIncrease,
-                    label = "Increase",
-                    isActive = false,
-                    onClick = onTextSizeIncrease
-                )
+                Surface(
+                    shape = RoundedCornerShape(10.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        text = "${textSize.toInt()}",
+                        style = MaterialTheme.typography.labelLarge,
+                        modifier = Modifier.padding(
+                            horizontal = 10.dp,
+                            vertical = 10.dp
+                        )
+                    )
+                }
+
+                IconButton(
+                    onClick = onTextSizeIncrease,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    Icon(
+                        Icons.Default.TextIncrease,
+                        contentDescription = "A+",
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // ─── Row 2: Background Color Picker ───────────
+            // ─── SECTION: Text Color ──────────────────────
+            SheetSectionLabel("TEXT COLOR")
+            Spacer(modifier = Modifier.height(12.dp))
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = "Color:",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                textColorOptions.forEach { (hex, color) ->
+                    ColorCircle(
+                        color = color,
+                        isSelected = selectedTextColor == hex,
+                        isDefault = hex == "default",
+                        defaultIcon = Icons.Default.FormatColorText,
+                        onClick = { onTextColorSelected(hex) }
+                    )
+                }
+            }
 
+            Spacer(modifier = Modifier.height(24.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.surfaceVariant)
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // ─── SECTION: Background Color ────────────────
+            SheetSectionLabel("BACKGROUND COLOR")
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
                 noteColorOptions.forEach { (hex, color) ->
                     ColorCircle(
                         color = color,
-                        isSelected = selectedColor == hex,
-                        onClick = { onColorSelected(hex) }
+                        isSelected = selectedBgColor == hex,
+                        isDefault = hex == "default",
+                        defaultIcon = Icons.Default.FormatColorFill,
+                        onClick = { onBgColorSelected(hex) }
                     )
                 }
             }
@@ -150,61 +221,91 @@ fun FormattingToolbar(
     }
 }
 
-// ─── Reusable Format Toggle Button ────────────────────────
+// ─── Section label ────────────────────────────────────────
 @Composable
-private fun FormatButton(
-    icon: ImageVector,
+private fun SheetSectionLabel(text: String) {
+    Text(
+        text = text,
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        letterSpacing = 1.sp
+    )
+}
+
+// ─── Format chip (Bold / Italic / H1 / H2) ───────────────
+@Composable
+private fun FormatChip(
     label: String,
     isActive: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isBold: Boolean = false,
+    isItalic: Boolean = false
 ) {
-    val bgColor = if (isActive)
-        MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
-    else
-        Color.Transparent
-
-    val iconTint = if (isActive)
-        MaterialTheme.colorScheme.primary
-    else
-        MaterialTheme.colorScheme.onSurfaceVariant
-
-    Box(
+    Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = if (isActive)
+            MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+        else
+            MaterialTheme.colorScheme.surfaceVariant,
         modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(bgColor)
+            .height(40.dp)
             .clickable { onClick() }
-            .padding(8.dp),
-        contentAlignment = Alignment.Center
     ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = label,
-            tint = iconTint,
-            modifier = Modifier.size(22.dp)
-        )
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.padding(horizontal = 14.dp)
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = if (isBold || isActive) FontWeight.Bold
+                    else FontWeight.Normal,
+                    color = if (isActive)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.onSurface
+                )
+            )
+        }
     }
 }
 
-// ─── Color Circle Selector ────────────────────────────────
+// ─── Color circle ─────────────────────────────────────────
 @Composable
-private fun ColorCircle(
+fun ColorCircle(
     color: Color,
     isSelected: Boolean,
+    isDefault: Boolean = false,
+    defaultIcon: androidx.compose.ui.graphics.vector.ImageVector =
+        Icons.Default.Circle,
     onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
-            .size(30.dp)
+            .size(36.dp)
             .clip(CircleShape)
-            .background(color)
+            .background(
+                if (isDefault) MaterialTheme.colorScheme.surfaceVariant
+                else color
+            )
             .border(
                 width = if (isSelected) 2.5.dp else 1.dp,
                 color = if (isSelected)
                     MaterialTheme.colorScheme.primary
                 else
-                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                    MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.2f),
                 shape = CircleShape
             )
-            .clickable { onClick() }
-    )
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        if (isDefault) {
+            Icon(
+                imageVector = defaultIcon,
+                contentDescription = "Default",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(18.dp)
+            )
+        }
+    }
 }
